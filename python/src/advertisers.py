@@ -21,14 +21,12 @@ class Advertisers(ApiObject):
         """
         Return a string with a summary of an element returned by this module.
         """
-        if isinstance(element, dict):
-            summary = f"{kind} ID: {element['id']} | Name: {element['name']}"
-            if element.get("status"):
-                summary += f" ({element['status']})"
-        else:
-            summary = f"{kind} ID: {element.id} | Name: {element.name}"
-            if element.status:
-                summary += f" ({element.status})"
+        id = cls.field(element, 'id')
+        name = cls.field(element, 'name')
+        summary = f"{kind} ID: {id} | Name: {name}"
+        status = cls.field(element, 'status')
+        if status:
+            summary += f" ({status})"
         return summary
 
     @classmethod

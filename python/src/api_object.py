@@ -67,7 +67,7 @@ class SDKPagedIterator:
         """
         if self.bookmark:
             self.query_parameters["bookmark"] = bookmark
-        pdb.set_trace()
+        # pdb.set_trace() # breakpoint for BUG-1572352
         (items, bookmark) = self.sdk_function(**self.query_parameters)
         self.items = items
         self.bookmark = bookmark
@@ -188,6 +188,20 @@ class ApiObject(ApiCommon):
 
     def get_sdk_iterator(self, sdk_function, query_parameters):
         return SDKPagedIterator(self, sdk_function, query_parameters)
+
+    @classmethod
+    def field(self, container, name):
+        """
+        Gets the value of a field in a data structure, whether the
+        field is the value of a key in a dict or returned by an object
+        method.
+        """
+        if isinstance(container, dict):
+            return container.get(name)
+        elif hasattr(container, name):
+            return getattr(container, name)
+        else:
+            return None
 
     @classmethod
     def print_multiple(cls, page_size, object_name, object_class, paged_iterator):
