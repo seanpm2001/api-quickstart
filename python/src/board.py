@@ -1,5 +1,6 @@
 from api_object import ApiObject
 
+from pinterest.organic.boards import Board as OrganicBoard
 
 class Board(ApiObject):
     def __init__(self, board_id, api_config, access_token):
@@ -10,7 +11,10 @@ class Board(ApiObject):
     def get(self):
         if not self.board_id:
             raise ValueError("board_id must be set to get a board")
+        """
         return self.request_data(f"/v5/boards/{self.board_id}")
+        """
+        return OrganicBoard(client=self.access_token.sdk_client, board_id=self.board_id)
 
     # provides a human-readable identifier for a board
     @classmethod
@@ -18,23 +22,24 @@ class Board(ApiObject):
         # simulate Pinterest URL to provide a text identifier
         return (
             "/"
-            + board_data["owner"]["username"]
+            + cls.field(board_data, "owner")["username"]
             + "/"
-            + board_data["name"].lower().replace(" ", "-")
+            + cls.field(board_data, "name").lower().replace(" ", "-")
             + "/"
         )
 
     @classmethod
     def print_summary(cls, board_data):
         print("--- Board Summary ---")
-        print(f"Board ID: {board_data['id']}")
-        print(f"Name: {board_data['name']}")
-        print(f"Description: {board_data.get('description')}")
-        print(f"Privacy: {board_data.get('privacy')}")
+        print(f"Board ID: {cls.field(board_data, 'id')}")
+        print(f"Name: {cls.field(board_data,'name')}")
+        print(f"Description: {cls.field(board_data, 'description')}")
+        print(f"Privacy: {cls.field(board_data, 'privacy')}")
         print("--------------------")
 
     # https://developers.pinterest.com/docs/api/v5/#operation/boards/create
     def create(self, board_data):
+        """
         OPTIONAL_ATTRIBUTES = ["description", "privacy"]
         create_data = {
             "name": board_data["name"],
@@ -45,12 +50,22 @@ class Board(ApiObject):
                 create_data[key] = value
 
         board_data = self.post_data("/v5/boards", create_data)
-        self.board_id = board_data["id"]
-        return board_data
+        """
+        board = OrganicBoard.create(
+            name=self.field(board_data, "name"),
+            description=self.field(board_data, "description"),
+            privacy=self.field(board_data, "privacy"),
+            client=self.access_token.sdk_client
+        )
+        self.board_id = board.id
+        return board
 
     # https://developers.pinterest.com/docs/api/v5/#operation/boards/delete
     def delete(self):
+        """
         self.delete_and_check(f"/v5/boards/{self.board_id}")
+        """
+        OrganicBoard.delete(client=self.access_token.sdk_client, board_id=self.board_id)
 
     # https://developers.pinterest.com/docs/api/v5/#operation/boards/list_pins
     def get_pins(self, query_parameters=None):

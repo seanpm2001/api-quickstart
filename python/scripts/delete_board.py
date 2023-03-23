@@ -84,7 +84,7 @@ def main(argv=[]):
         ):
             continue
 
-        deletion_board.board_id = board_data["id"]
+        deletion_board.board_id = Board.field(board_data, "id")
         deletion_board.delete()
 
 

@@ -117,7 +117,7 @@ def main(argv=[]):
     # helper function to copy a pin
     def copy_pin(pin, pin_data, target_board_id, target_section_id=None):
         try:
-            pintype = pin_data.get("type")
+            pintype = Pin.field(pin_data, "type")
             # Sometimes the board list operation will generate entities
             # (e.g. "more ideas" tiles) that resemble pins but can not be copied.
             if not pintype or pintype == "pin":
@@ -174,7 +174,7 @@ def main(argv=[]):
 
         print("source board:")
         Board.print_summary(source_board_data)
-        source_board.board_id = source_board_data["id"]
+        source_board.board_id = Board.field(source_board_data, "id")
 
         # Use different name, which is mandatory when using a single access token.
         # Change the name after the Board.print_summary with the source name.
@@ -196,13 +196,13 @@ def main(argv=[]):
         # copy board pins
         for pin_data in source_board.get_pins():
             # ignore pins in sections for now. they will be copied into each section
-            if pin_data.get("board_section_id"):
+            if Pin.field(pin_data, "board_section_id"):
                 continue
             if args.dry_run:
                 print("dry-run: skipping attempt to create board pin:")
                 Pin.print_summary(pin_data)
             else:
-                copy_pin(target_pin, pin_data, target_board_data["id"])
+                copy_pin(target_pin, pin_data, Board.field(target_board_data, "id"))
 
         # get and copy board sections
         sections_iterator = source_board.get_sections()
@@ -226,8 +226,8 @@ def main(argv=[]):
                     copy_pin(
                         target_pin,
                         pin_data,
-                        target_board_data["id"],
-                        target_section_data["id"],
+                        Board.field(target_board_data, "id"),
+                        Board.field(target_section_data, "id"),
                     )
 
 

@@ -65,13 +65,14 @@ class SDKPagedIterator:
         """
         Use SDK function to run HTTP GET. Then, look for bookmark in response.
         """
+        pdb.set_trace() # breakpoint for BUG-1572352
         if self.bookmark:
-            self.query_parameters["bookmark"] = bookmark
-        # pdb.set_trace() # breakpoint for BUG-1572352
-        (items, bookmark) = self.sdk_function(**self.query_parameters)
+            (items, bookmark) = self.bookmark.get_next()
+        else:
+            (items, bookmark) = self.sdk_function(**self.query_parameters)
         self.items = items
         self.bookmark = bookmark
-        # pdb.set_trace()
+        pdb.set_trace()
         self.index = 0
 
     def __init__(self, api_object, sdk_function, query_parameters):
