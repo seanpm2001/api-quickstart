@@ -58,6 +58,7 @@ class Advertisers(ApiObject):
         """
         qp = dict(query_parameters or {})
         qp["ad_account_id"] = ad_account_id
+        qp["client"] = self.access_token.sdk_client
         return self.get_sdk_iterator(Campaign.get_all, qp)
 
     # https://developers.pinterest.com/docs/api/v5/#operation/ad_groups/listp
@@ -74,6 +75,7 @@ class Advertisers(ApiObject):
         qp = dict(query_parameters or {})
         qp["ad_account_id"] = ad_account_id
         qp["campaign_ids"] = [campaign_id]
+        qp["client"] = self.access_token.sdk_client
         return self.get_sdk_iterator(AdGroup.get_all, qp)
 
     # https://developers.pinterest.com/docs/api/v5/#operation/ads/list
@@ -92,4 +94,5 @@ class Advertisers(ApiObject):
         qp["ad_account_id"] = ad_account_id
         qp["campaign_ids"] = [campaign_id]
         qp["ad_group_ids"] = [ad_group_id]
+        qp["client"] = self.access_token.sdk_client
         return self.get_sdk_iterator(Ad.get_all, qp)

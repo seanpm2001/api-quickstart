@@ -14,7 +14,8 @@ class Board(ApiObject):
         """
         return self.request_data(f"/v5/boards/{self.board_id}")
         """
-        return OrganicBoard(client=self.access_token.sdk_client, board_id=self.board_id)
+        self.board = OrganicBoard(client=self.access_token.sdk_client, board_id=self.board_id)
+        return self.board
 
     # provides a human-readable identifier for a board
     @classmethod
@@ -57,6 +58,7 @@ class Board(ApiObject):
             privacy=self.field(board_data, "privacy"),
             client=self.access_token.sdk_client
         )
+        self.board = board
         self.board_id = board.id
         return board
 
@@ -69,19 +71,25 @@ class Board(ApiObject):
 
     # https://developers.pinterest.com/docs/api/v5/#operation/boards/list_pins
     def get_pins(self, query_parameters=None):
+        """
         return self.get_iterator(f"/v5/boards/{self.board_id}/pins", query_parameters)
+        """
+        return self.get_sdk_iterator(self.board.list_pins, query_parameters)
 
     # https://developers.pinterest.com/docs/api/v5/#operation/board_sections/list
     def get_sections(self, query_parameters=None):
+        """
         return self.get_iterator(
             f"/v5/boards/{self.board_id}/sections", query_parameters
         )
+        """
+        return self.get_sdk_iterator(self.board.list_sections, query_parameters)
 
     @classmethod
     def print_section(cls, section_data):
         print("--- Board Section ---")
-        print(f"Section ID: {section_data['id']}")
-        print(f"Name: {section_data['name']}")
+        print(f"Section ID: {cls.field(section_data, 'id')}")
+        print(f"Name: {cls.field(section_data, 'name')}")
         print("---------------------")
 
     # https://developers.pinterest.com/docs/api/v5/#operation/board_sections/create
@@ -93,6 +101,11 @@ class Board(ApiObject):
 
     # https://developers.pinterest.com/docs/api/v5/#operation/board_sections/list_pins
     def get_section_pins(self, section_id, query_parameters=None):
+        """
         return self.get_iterator(
             f"/v5/boards/{self.board_id}/sections/{section_id}/pins", query_parameters
         )
+        """
+        qp = dict(query_parameters or {})
+        qp['section_id'] = qp
+        return self.get_sdk_iterator(self.board.list_pins, query_parameters)

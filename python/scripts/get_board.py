@@ -49,13 +49,13 @@ def main(argv=[]):
     if args.pins:
         for pin_data in board.get_pins():
             # ignore pins in sections for now. they will be printed for each section
-            if not pin_data.get("board_section_id"):
+            if not Pin.field(pin_data, "board_section_id"):
                 Pin.print_summary(pin_data)
 
     for section_data in board.get_sections():
         board.print_section(section_data)
         if args.pins:
-            for pin_data in board.get_section_pins(section_data["id"]):
+            for pin_data in board.get_section_pins(Board.field(section_data,"id")):
                 Pin.print_summary(pin_data)
 
 
