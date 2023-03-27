@@ -41,7 +41,7 @@ class Board(ApiObject):
         print("--------------------")
 
     # https://developers.pinterest.com/docs/api/v5/#operation/boards/create
-    def create(self, board_data):
+    def create(self, board_data, name):
         """
         OPTIONAL_ATTRIBUTES = ["description", "privacy"]
         create_data = {
@@ -55,7 +55,7 @@ class Board(ApiObject):
         board_data = self.post_data("/v5/boards", create_data)
         """
         board = OrganicBoard.create(
-            name=self.field(board_data, "name"),
+            name=name,
             description=self.field(board_data, "description"),
             privacy=self.field(board_data, "privacy"),
             client=self.access_token.sdk_client
@@ -110,7 +110,8 @@ class Board(ApiObject):
         """
         return OrganicBoardSection.create(
             board_id=self.board_id,
-            name=self.field(section_data, "name")
+            name=self.field(section_data, "name"),
+            client=self.access_token.sdk_client
         )
 
     # https://developers.pinterest.com/docs/api/v5/#operation/board_sections/list_pins
@@ -124,5 +125,5 @@ class Board(ApiObject):
         if not self.board:
             self.get()
         qp = dict(query_parameters or {})
-        qp['section_id'] = qp
-        return self.get_sdk_iterator(self.board.list_pins, query_parameters)
+        qp['section_id'] = section_id
+        return self.get_sdk_iterator(self.board.list_pins, qp)

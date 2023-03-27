@@ -195,6 +195,9 @@ class ApiObject(ApiCommon):
         Gets the value of a field in a data structure, whether the
         field is the value of a key in a dict or returned by an object
         method.
+
+        TODO: REMOVE THIS METHOD AFTER COMPLETING THE CONVERSION FROM
+        RAW REST (WHICH RETURNS dict) TO THE SDK (WHICH RETURNS OBJECTS).
         """
         if isinstance(container, dict):
             return container.get(name)

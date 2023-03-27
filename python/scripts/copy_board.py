@@ -180,7 +180,6 @@ def main(argv=[]):
         # Change the name after the Board.print_summary with the source name.
         if args.name:
             print('setting target board name to "' + args.name + '"')
-            source_board_data["name"] = args.name
 
         # This Board object is reusable. The board_id is set when the
         # create method is called successfully.
@@ -189,7 +188,10 @@ def main(argv=[]):
             print("dry-run: skipping attempt to create board:")
             Board.print_summary(source_board_data)
         else:
-            target_board_data = target_board.create(source_board_data)
+            target_board_data = target_board.create(
+                source_board_data,
+                args.name or Board.field(source_board_data, "name")
+            )
             print("target board:")
             Board.print_summary(target_board_data)
 
@@ -218,7 +220,9 @@ def main(argv=[]):
                 Board.print_section(target_section_data)
 
             # copy board section pins
-            for pin_data in source_board.get_section_pins(section_data["id"]):
+            for pin_data in source_board.get_section_pins(
+                Board.field(section_data, "id")
+                ):
                 if args.dry_run:
                     print("dry-run: skipping attempt to create board section pin:")
                     Pin.print_summary(pin_data)
