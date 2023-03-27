@@ -1,6 +1,7 @@
 from api_object import ApiObject
 from board import Board
 
+from pinterest.organic.boards import Board as OrganicBoard
 
 class UserPinIterator:
     """
@@ -49,7 +50,12 @@ class User(ApiObject):
     # https://developers.pinterest.com/docs/api/v5/#operation/boards/list
     def get_boards(self, user_data, query_parameters=None):
         # the returned iterator handles API paging
+        """
         return self.get_iterator("/v5/boards", query_parameters)
+        """
+        qp = dict(query_parameters or {})
+        qp['client'] = self.access_token.sdk_client
+        return self.get_sdk_iterator(OrganicBoard.get_all, qp)
 
     # getting all of a user's pins is not supported, so iterate through boards
     def get_pins(self, user_data, query_parameters=None):
