@@ -1,11 +1,13 @@
 from api_object import ApiObject
 
 from pinterest.organic.boards import Board as OrganicBoard
+from pinterest.organic.boards import BoardSection as OrganicBoardSection
 
 class Board(ApiObject):
     def __init__(self, board_id, api_config, access_token):
         super().__init__(api_config, access_token)
         self.board_id = board_id
+        self.board = None
 
     # https://developers.pinterest.com/docs/api/v5/#operation/boards/get
     def get(self):
@@ -74,6 +76,9 @@ class Board(ApiObject):
         """
         return self.get_iterator(f"/v5/boards/{self.board_id}/pins", query_parameters)
         """
+        # TODO: is it possible to list pins without doing a GET for the board?
+        if not self.board:
+            self.get()
         return self.get_sdk_iterator(self.board.list_pins, query_parameters)
 
     # https://developers.pinterest.com/docs/api/v5/#operation/board_sections/list
@@ -83,6 +88,9 @@ class Board(ApiObject):
             f"/v5/boards/{self.board_id}/sections", query_parameters
         )
         """
+        # TODO: is it possible to list sections without doing a GET for the board?
+        if not self.board:
+            self.get()
         return self.get_sdk_iterator(self.board.list_sections, query_parameters)
 
     @classmethod
@@ -94,10 +102,16 @@ class Board(ApiObject):
 
     # https://developers.pinterest.com/docs/api/v5/#operation/board_sections/create
     def create_section(self, section_data):
+        """
         create_data = {
             "name": section_data["name"],
         }
         return self.post_data(f"/v5/boards/{self.board_id}/sections", create_data)
+        """
+        return OrganicBoardSection.create(
+            board_id=self.board_id,
+            name=self.field(section_data, "name")
+        )
 
     # https://developers.pinterest.com/docs/api/v5/#operation/board_sections/list_pins
     def get_section_pins(self, section_id, query_parameters=None):
@@ -106,6 +120,9 @@ class Board(ApiObject):
             f"/v5/boards/{self.board_id}/sections/{section_id}/pins", query_parameters
         )
         """
+        # TODO: is it possible to list pins without doing a GET for the board?
+        if not self.board:
+            self.get()
         qp = dict(query_parameters or {})
         qp['section_id'] = qp
         return self.get_sdk_iterator(self.board.list_pins, query_parameters)
