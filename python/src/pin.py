@@ -94,7 +94,7 @@ class Pin(ApiMediaObject):
         self.pin_id = pin_data["id"]
         return pin_data
         """
-        pdb.set_trace()
+        # pdb.set_trace()
         pin = OrganicPin.create(
             board_id=board_id,
             media_source=media_source,
@@ -107,7 +107,7 @@ class Pin(ApiMediaObject):
             parent_pin_id=self.field(pin_data, "parent_pin_id"),
             client=self.access_token.sdk_client
         )
-        pdb.set_trace()
+        # pdb.set_trace()
         self.pin_id = pin.id
         return pin
 
