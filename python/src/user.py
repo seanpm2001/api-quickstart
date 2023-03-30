@@ -3,6 +3,8 @@ from board import Board
 
 from pinterest.organic.boards import Board as OrganicBoard
 
+import pdb
+
 class UserPinIterator:
     """
     This class emulates the ability to list all pins for a user.
@@ -24,7 +26,8 @@ class UserPinIterator:
             return pin
         # no more pins, try next board
         for board_data in self.board_iterator:
-            board = Board(board_data["id"], self.api_config, self.access_token)
+            # pdb.set_trace()
+            board = Board(Board.field(board_data, "id"), self.api_config, self.access_token)
             self.pin_iterator = board.get_pins(self.query_parameters)
             return self.__next__()  # recursively try pin iterator
 
