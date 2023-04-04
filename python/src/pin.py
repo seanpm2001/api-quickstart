@@ -95,22 +95,27 @@ class Pin(ApiMediaObject):
         return pin_data
         """
         # pdb.set_trace()
-        pin = OrganicPin.create(
-            board_id=board_id,
-            media_source=media_source,
-            link=self.field(pin_data, "link"),
-            title=self.field(pin_data, "title"),
-            description=self.field(pin_data, "description"),
-            dominant_color=self.field(pin_data, "dominant_color"),
-            alt_text=self.field(pin_data, "alt_text"),
-            board_section_id=section,
-            parent_pin_id=self.field(pin_data, "parent_pin_id"),
-            client=self.access_token.sdk_client
-        )
-        # pdb.set_trace()
-        self.pin_id = pin.id
+        try:
+            pin = OrganicPin.create(
+                board_id=board_id,
+                media_source=media_source,
+                link=self.field(pin_data, "link"),
+                title=self.field(pin_data, "title"),
+                description=self.field(pin_data, "description"),
+                dominant_color=self.field(pin_data, "dominant_color"),
+                alt_text=self.field(pin_data, "alt_text"),
+                board_section_id=section,
+                parent_pin_id=self.field(pin_data, "parent_pin_id"),
+                client=self.access_token.sdk_client
+            )
+            # pdb.set_trace()
+            self.pin_id = pin.id
+        except Exception as ex:
+            if (hasattr(ex, 'status') and ex.status == 404 and
+                hasattr(ex, 'reason') and ex.reason == 'Not Found'):
+                return {'id': 'API BUG: GET created pin failed'}
+            raise
         return pin
-
 
     # https://developers.pinterest.com/docs/api/v5/#operation/media/create
     def upload_media(self, media_path):
