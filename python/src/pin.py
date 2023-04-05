@@ -94,6 +94,10 @@ class Pin(ApiMediaObject):
         self.pin_id = pin_data["id"]
         return pin_data
         """
+        # truncate description if necessary
+        description = self.field(pin_data, "description")
+        if isinstance(description, str):
+            description = description[0:500]
         # pdb.set_trace()
         try:
             pin = OrganicPin.create(
@@ -101,7 +105,7 @@ class Pin(ApiMediaObject):
                 media_source=media_source,
                 link=self.field(pin_data, "link"),
                 title=self.field(pin_data, "title"),
-                description=self.field(pin_data, "description"),
+                description=description,
                 dominant_color=self.field(pin_data, "dominant_color"),
                 alt_text=self.field(pin_data, "alt_text"),
                 board_section_id=section,
