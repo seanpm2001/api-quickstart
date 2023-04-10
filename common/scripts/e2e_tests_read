@@ -39,7 +39,7 @@ SCRIPT_DIR=$(cd "$(dirname "$0")"; pwd)
 ./scripts/get_pin.${EXT} -p ${PIN} -a "${TEST1}"
 
 # get the user pins for the pindexter account
-./scripts/get_user_pins.${EXT} --page-size 100 -a "${TEST1}"
+./scripts/get_user_pins.${EXT} --page-size 250 -a "${TEST1}"
 
 # get a specific board for the pindexter account
 ./scripts/get_board.${EXT} -a "${TEST1}" -b ${BOARD}
