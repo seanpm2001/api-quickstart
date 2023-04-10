@@ -10,6 +10,7 @@ from access_token import AccessToken
 from advertisers import Advertisers
 from analytics import AdAnalytics, PinAnalytics, UserAnalytics
 from api_config import ApiConfig
+from api_object import ApiObject
 from arguments import common_arguments
 from oauth_scope import Scope
 from user import User
@@ -41,7 +42,7 @@ def find_and_get_analytics(
         # Prompt to get the entity index.
         prompt = f"Please select the {kind} number between 1 and {n_entities}:"
         index = input_number(prompt, 1, n_entities)
-        entity_id = entity_list[index - 1]["id"]
+        entity_id = ApiObject.field(entity_list[index - 1], "id")
 
     get_args += [entity_id]
 
