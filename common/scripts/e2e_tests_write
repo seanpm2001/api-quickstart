@@ -51,13 +51,15 @@ done
 
 # Save a pin
 SAVE_BOARD_ID=$(./scripts/get_user_boards.${EXT} -a ${TEST2} --page-size 100 | grep -B 1 "${SAVE_BOARD_NAME}" | grep "Board ID" | cut -d ' ' -f 3)
-./scripts/save_pin.${EXT} -a ${TEST2} -p ${PIN} -b "${SAVE_BOARD_ID}"
+SAVE_PIN_ID=$(./scripts/get_user_pins.${EXT} -a ${TEST2} --page-size 100 | grep -B 1 "${SAVE_PIN_NAME}" | grep "Pin ID" | cut -d ' ' -f 3)
+./scripts/save_pin.${EXT} -a ${TEST2} -p ${SAVE_PIN_ID} -b "${SAVE_BOARD_ID}"
 
 # The board used to test saves should have a section.
 # There may be some deduplication logic that prevents this save from happening
 # if it is exactly the same pin as the previous save, so use a different pin ID.
 SAVE_SECTION_ID=$(./scripts/get_board.${EXT} -a ${TEST2} -b "${SAVE_BOARD_ID}" | grep -m 1 'Section ID' | cut -d ' ' -f 3 )
-./scripts/save_pin.${EXT} -a ${TEST2} -p ${PIN2} -b "${SAVE_BOARD_ID}" -s "${SAVE_SECTION_ID}"
+SAVE_PIN2_ID=$(./scripts/get_user_pins.${EXT} -a ${TEST2} --page-size 100 | grep -B 1 "${SAVE_PIN2_NAME}" | grep "Pin ID" | cut -d ' ' -f 3)
+./scripts/save_pin.${EXT} -a ${TEST2} -p ${SAVE_PIN2_ID} -b "${SAVE_BOARD_ID}" -s "${SAVE_SECTION_ID}"
 
 # The video file is required for this part of the test.
 if [ -r "${VIDEO_FILE}" ] ; then
@@ -65,7 +67,7 @@ if [ -r "${VIDEO_FILE}" ] ; then
     VIDEO_BOARD_ID=$(./scripts/get_user_boards.${EXT} -a ${TEST2} --page-size 100 | grep -B 1 "${VIDEO_BOARD_NAME}" | grep "Board ID" | cut -d ' ' -f 3)
 
     # get a single pin to copy
-    VIDEO_PIN_ID=$(./scripts/get_user_pins.${EXT} -a ${TEST2} --page-size 100 | grep -B 1 -m 1 "${VIDEO_PIN_DESCRIPTION}" | grep "Pin ID" | cut -d ' ' -f 3)
+    VIDEO_PIN_ID=$(./scripts/get_user_pins.${EXT} -a ${TEST2} --page-size 100 | grep -B 2 -m 1 "${VIDEO_PIN_DESCRIPTION}" | grep "Pin ID" | cut -d ' ' -f 3)
 
     # copy the pin, adding the video
     ./scripts/copy_pin.${EXT} -a "${TEST2}" -p "$VIDEO_PIN_ID" -b "$VIDEO_BOARD_ID" -m "${VIDEO_FILE}"

@@ -52,6 +52,8 @@ BOARDS="1097963652843589867 1097963652843589878 1097963652843264117"
 
 VIDEO_BOARD_NAME="Thailand"
 SAVE_BOARD_NAME="Tequila"
+SAVE_PIN_NAME="Teacup Shelf"
+SAVE_PIN2_NAME="Woodworking Tricks Crown Moldings"
 VIDEO_PIN_DESCRIPTION="Khao Phanom Bencha National Park"
 
 # A video file is required to test video pin creation.
